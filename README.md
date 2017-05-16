@@ -3,9 +3,9 @@
 sample/gitolite.conf.lua :
 ```lua
 BEGIN "desc"
-	desc["gitolite-admin"]                          = "gitolite-admin"
-	desc["foo"]					= "my repo named foo"
-	desc["bar"]					= "bar"
+	desc["gitolite-admin"]		= "gitolite-admin"
+	desc["foo"]			= "my repo named foo"
+	desc["bar"]			= "bar"
 END "desc"
 
 BEGIN "group"

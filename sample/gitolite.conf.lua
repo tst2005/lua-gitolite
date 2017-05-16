@@ -1,6 +1,6 @@
 BEGIN "desc"
 
-desc["gitolite-admin"]                          = "gitolite-admin"
+desc["gitolite-admin"]				= "gitolite-admin"
 desc["foo"]					= "my repo named foo"
 desc["bar"]					= "bar"
 
