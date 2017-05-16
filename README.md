@@ -1,7 +1,7 @@
 
 
 sample/gitolite.conf.lua :
-```
+```lua
 BEGIN "desc"
 	desc["gitolite-admin"]                          = "gitolite-admin"
 	desc["foo"]					= "my repo named foo"
@@ -33,11 +33,9 @@ BEGIN "repo"
 END "repo"
 ```
 
-```
-$ lua ./gitolite-confdumper.lua < sample/gitolite.conf.lua
-```
+`$ lua ./gitolite-confdumper.lua < sample/gitolite.conf.lua`
 
-```
+```gitolite.conf
 
 # Descriptions
 gitolite-admin = "gitolite-admin"
