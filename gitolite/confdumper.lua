@@ -74,7 +74,7 @@ hooks.repo = function(action, name)
 			if line.perm then
 				local members = expand_group_to_users(line[2], group)
 				table.sort(members)
-				require"mini.table.uniq"(members)
+				require"mini.table.uniq.inplace"(members)
 				print("", line[1][1], line[1][2] or "", "\t= "..table.concat(members, " "))
 			else
 				print("", line[1][1], line[1][2] or "", "\t= "..'"'..line[2]..'"')
