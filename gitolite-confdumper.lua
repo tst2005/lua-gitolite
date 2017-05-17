@@ -148,7 +148,7 @@ end
 assert(not sources["mini.table.uniq"],"module already exists")sources["mini.table.uniq"]=([===[-- <pack mini.table.uniq> --
 return function(t)
 	local new = {}
-	local past = nil
+	local last = nil
 	for i,v in ipairs(t) do
 		if not last or last~=v then
 			new[#new+1]=v
