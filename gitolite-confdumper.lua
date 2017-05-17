@@ -145,21 +145,17 @@ return function(self, pat, plain, max)
 	end
 end
 ]===]):gsub('\\([%]%[]===)\\([%]%[])','%1%2')
-assert(not sources["mini.table.uniq"],"module already exists")sources["mini.table.uniq"]=([===[-- <pack mini.table.uniq> --
+assert(not sources["mini.table.uniq.inplace"],"module already exists")sources["mini.table.uniq.inplace"]=([===[-- <pack mini.table.uniq.inplace> --
 return function(t)
-	local new = {}
+	local table_remove = table.remove
 	local last = nil
-	for i,v in ipairs(t) do
-		if not last or last~=v then
-			new[#new+1]=v
+	for i=#t,1,-1 do
+		local v = t[i]
+		if last ~= nil and last==v then
+			table_remove(t,i)
+		else
 			last=v
 		end
-	end
-	for i=1,#t do
-		t[i]=nil
-	end
-	for i,v in ipairs(new) do
-		t[i]=v
 	end
 	return t
 end
@@ -241,7 +237,7 @@ hooks.repo = function(action, name)
 			if line.perm then
 				local members = expand_group_to_users(line[2], group)
 				table.sort(members)
-				require"mini.table.uniq"(members)
+				require"mini.table.uniq.inplace"(members)
 				print("", line[1][1], line[1][2] or "", "\t= "..table.concat(members, " "))
 			else
 				print("", line[1][1], line[1][2] or "", "\t= "..'"'..line[2]..'"')
