@@ -14,9 +14,19 @@ local e = {
 e._G = e
 
 --local env = require "mini.proxy.ro2rw"
+
 local load = require "mini.load"
---local content = io.open("conf/gitolite.lua", "r"):read("*a")
-local content = io.stdin:read("*a")
+
+if #{...} == 0 then
+	print("Usage: gitolite-confdumper <path/to/gitolite.conf.lua|'-'>")
+	os.exit(1)
+end
+local content
+if (...) == "-" then
+	content = io.stdin:read("*a")
+else
+	content = io.open( (...), "r"):read("*a")
+end
 local f = load(content, "@conf/gitolite.lua", "t", e)
 assert(f)()
 
