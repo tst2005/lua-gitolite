@@ -1,3 +1,12 @@
+if false then
+	do
+	local lpeg = require "lulpeg"
+	local re = lpeg.re
+	package.loaded.lpeg = lpeg
+	package.loaded.re = re
+	end
+end
+
 local re = require "re"
 
 local re_internal_def
