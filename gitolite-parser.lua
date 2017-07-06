@@ -1,12 +1,3 @@
-if false then
-	do
-	local lpeg = require "lulpeg"
-	local re = lpeg.re
-	package.loaded.lpeg = lpeg
-	package.loaded.re = re
-	end
-end
-
 local re = require "re"
 
 local re_internal_def
@@ -21,62 +12,14 @@ do
 
 	lpeg.locale = locale -- restore the function
 
-end
--- patch the internal data
-if re_internal_def.nl then
-	do
-		local lpeg = require "lpeg"
+	-- patch the internal data
+	if re_internal_def.nl then
 		re_internal_def.tab = lpeg.P"\t"	-- tab
-		re_internal_def.lf = lpeg.P"\n"		-- lF
-		re_internal_def.cr = lpeg.P"\r"		-- CR
-		re_internal_def.crlf = lpeg.P"\r\n"	-- CRLF
 		re_internal_def.taborspace = lpeg.S" \t" -- space or tab
+--		re_internal_def.lf = lpeg.P"\n"		-- lF
+--		re_internal_def.cr = lpeg.P"\r"		-- CR
+--		re_internal_def.crlf = lpeg.P"\r\n"	-- CRLF
 	end
-end
-
-local data = [[
-### Repo Descriptions 
-@group1 = u1 u2
-
-## foo
-gitolite-admin = "gitolite-admin"
-
-foo = "FOO"	# comm
-@g1 = ab cd de
-@g2 = xy @g1
-# foo
-
-repo    foo-bar                  # alias=stuff
- RW = user
-
-
-repo  foo-repo  # comment
- RW = a b c        # comm
- RW = x y
- RW = y
- RW      = d e
-
-# COMM
-repo alpha
- RW = abc cde
- RW+ = feg ijh
- R = a
- RW = b
- RW+ = c
- RW+C = d
- RW+D = e
- RW+CD temp/ = f
-
-## x
-#x
-#
-
-@dxx-mttt = ac efqew greghe yrhry 54t24 69hk40p
-
-]]
-
-if ... == "-" then
-	data = io.stdin:read("*a")
 end
 
 local grammar = re.compile[[
@@ -124,8 +67,9 @@ local grammar = re.compile[[
 	eof <- {| {:tag: '' -> "eof" :} |}
 ]]
 
-local x = grammar:match( data )
-print(require"mini.tprint.better"(x, {inline=false}))
+return function(data)
+	return grammar:match( data )
+end
 
 --permmembers <- {| member ("," maybespaces member)* |}
 --permmembers <- {| (member "," maybespaces)* member |}
