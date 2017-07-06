@@ -25,13 +25,19 @@ end
 local grammar = re.compile[[
 	gitolite <- {| ( repoline / commentline / descline / groupline / emptyline)* {:tag: '' -> 'file' :} unmatched^-1 eof |} !.
 	
-	emptyline <- {| {:tag: '' -> "emptyline" :} |} %nl
+	emptyline <- keepemptyline
+	--emptyline <- skipemptyline
 
-	commentline <- comment %nl
-	comment <- skipcomment
-	--comment <- keepcomment
+	--comment <- skipcomment
+	comment <- keepcomment
+
+	keepemptyline <- {| {:tag: '' -> "emptyline" :} |} %nl
+	skipemptyline <- %nl
+
 	keepcomment <- {| maybespaces {'#' [^%nl]* } {:tag: '' -> "comment" :} |}
 	skipcomment <- maybespaces '#' [^%nl]*
+
+	commentline <- comment %nl
 	maybespaces <- ws*
 	spaces <- ws+
 	ws <- %taborspace
@@ -50,16 +56,16 @@ local grammar = re.compile[[
 	repoline <- {| maybespaces 'repo' spaces reponame comment^-1 %nl repobody {:tag: '' -> "repo" :} |}
 	reponame <- {| { [a-zA-Z0-9_-]+ } {:tag: '' -> "repo-name" :} |}
 	repobody <- (permline)+
-	permline <- permline0 / permline1 / permline2 / permline3 / permline4 / permline5
-	--permline <- permline0 / permline1 / permline2 / permline5
+	--permline <- permline0 / permline1 / permline2 / permline3 / permline4 / permline5
+	permline <- permline0 / permline1 / permline2 / permline5
 	permline0 <- {| maybespaces "config" maybespaces {[^%nl]*} {:tag: '' -> "config" :} |} %nl
-	permline1 <- {| maybespaces perm maybespaces filter maybespaces '=' maybespaces members comment* {:tag: '' -> "permline+" :} |} %nl
-	permline2 <- {| maybespaces perm maybespaces filter maybespaces '=' maybespaces members {:tag: '' -> "permline+" :} |} %nl
-	permline3 <- {| maybespaces perm maybespaces '=' maybespaces members comment* {:tag: '' -> "permline" :} |} %nl
-	permline4 <- {| maybespaces perm maybespaces '=' maybespaces members {:tag: '' -> "permline" :} |} %nl
+	permline1 <- {| maybespaces perm maybespaces filter^-1 maybespaces '=' maybespaces members comment* {:tag: '' -> "permline+" :} |} %nl
+	permline2 <- {| maybespaces perm maybespaces filter^-1 maybespaces '=' maybespaces members {:tag: '' -> "permline+" :} |} %nl
+	--permline3 <- {| maybespaces perm maybespaces '=' maybespaces members comment* {:tag: '' -> "permline" :} |} %nl
+	--permline4 <- {| maybespaces perm maybespaces '=' maybespaces members {:tag: '' -> "permline" :} |} %nl
 	permline5 <- comment^-1 %nl
 	--filter <- {| {[a-zA-Z/_-]+} |}
-	filter <- {| {%S+} {:tag: '' -> "filter" :} |}
+	filter <- {| {[^%s=]+} {:tag: '' -> "filter" :} |}
 	
 	perm <- {| {"-" / "C" / ("RW" "+"^-1 ("CD" / "C" /"D")^-1 "M"^-1) / "R"} {:tag: '' -> "perm" :} |}
 
