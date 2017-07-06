@@ -23,7 +23,7 @@ do
 end
 
 local grammar = re.compile[[
-	gitolite <- {| ( repoline / commentline / descline / groupline / emptyline)* {:tag: '' -> 'lines' :} unmatched^-1 eof |} !.
+	gitolite <- {| ( repoline / commentline / descline / groupline / emptyline)* {:tag: '' -> 'file' :} unmatched^-1 eof |} !.
 	
 	emptyline <- {| {:tag: '' -> "emptyline" :} |} %nl
 
@@ -40,28 +40,28 @@ local grammar = re.compile[[
 	descname <- {| {[a-zA-Z0-9_-]+} {:tag: '' -> "desc-name" :} |}
 	desccontent <- {| '"' {[^"]*} '"' {:tag: '' -> "desc-content" :} |}
 
-	groupline <- {| {:tag: '' -> "group" :} groupname maybespaces '=' maybespaces groupmembers comment^-1 |} %nl
-	groupname <- {| { "@" [a-zA-Z0-9_-]+ } {:tag: '' -> "group-name" :} |}
-	username  <- {[a-zA-Z0-9_-]+}
-	--groupmembers <- {[a-zA-Z0-9, _-]+}
-	groupmembers <- {| member (spaces member)* {:tag: '' -> "group-members" :} |}
+	groupline <- {| {:tag: '' -> "groupdef" :} groupname maybespaces '=' maybespaces members comment^-1 |} %nl
+	groupname <- {| { "@" [a-zA-Z0-9_-]+ } {:tag: '' -> "group" :} |}
+	username  <- {| {[a-zA-Z0-9_-]+} {:tag: '' -> "user" :} |}
+	--members <- {[a-zA-Z0-9, _-]+}
+	members <- {| member (spaces member)* {:tag: '' -> "members" :} |}
 	member <- groupname / username
 
 	repoline <- {| maybespaces 'repo' spaces reponame comment^-1 %nl repobody {:tag: '' -> "repo" :} |}
-	reponame <- { [a-zA-Z0-9_-]+ }
+	reponame <- {| { [a-zA-Z0-9_-]+ } {:tag: '' -> "repo-name" :} |}
 	repobody <- (permline)+
 	permline <- permline0 / permline1 / permline2 / permline3 / permline4 / permline5
-	permline0 <- {| maybespaces "config" {[^%nl]*} {:tag: '' -> "config" :} |} %nl
-	permline1 <- {| maybespaces perm maybespaces filter maybespaces '=' maybespaces permmembers comment* |} %nl
-	permline2 <- {| maybespaces perm maybespaces filter maybespaces '=' maybespaces permmembers |} %nl
-	permline3 <- {| maybespaces perm maybespaces '=' maybespaces permmembers comment* |} %nl
-	permline4 <- {| maybespaces perm maybespaces '=' maybespaces permmembers |} %nl
+	--permline <- permline0 / permline1 / permline2 / permline5
+	permline0 <- {| maybespaces "config" maybespaces {[^%nl]*} {:tag: '' -> "config" :} |} %nl
+	permline1 <- {| maybespaces perm maybespaces filter maybespaces '=' maybespaces members comment* {:tag: '' -> "permline+" :} |} %nl
+	permline2 <- {| maybespaces perm maybespaces filter maybespaces '=' maybespaces members {:tag: '' -> "permline+" :} |} %nl
+	permline3 <- {| maybespaces perm maybespaces '=' maybespaces members comment* {:tag: '' -> "permline" :} |} %nl
+	permline4 <- {| maybespaces perm maybespaces '=' maybespaces members {:tag: '' -> "permline" :} |} %nl
 	permline5 <- comment^-1 %nl
 	--filter <- {| {[a-zA-Z/_-]+} |}
 	filter <- {| {%S+} {:tag: '' -> "filter" :} |}
 	
 	perm <- {| {"-" / "C" / ("RW" "+"^-1 ("CD" / "C" /"D")^-1 "M"^-1) / "R"} {:tag: '' -> "perm" :} |}
-	permmembers <- {| member (spaces member)* |}
 
 	unmatched <- {| {:tag: '' -> "unmatched-data" :} {.*} |}
 	eof <- {| {:tag: '' -> "eof" :} |}
