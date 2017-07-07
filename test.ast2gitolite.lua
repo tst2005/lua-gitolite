@@ -1,14 +1,14 @@
 
-local x = require "ast2gitolite"
+local ast2gitolite = require "ast2gitolite"
 
 --if (...) == "-" then
 	local tmpenv = {}
 	local luacode = "return "..io.stdin:read("*a")
 	local load = loadstring or load
-	local t = load(luacode, luacode, "t", tmpenv)()
+	local ast = load(luacode, luacode, "t", tmpenv)()
 	--print(t)
 	--print("t = "..require"tprint"(t, {inline=false}))
-	print(x:render(t))
+	print(ast2gitolite(ast))
 --	return
 --end
 
