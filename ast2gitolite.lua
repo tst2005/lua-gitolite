@@ -1,26 +1,9 @@
 local renderer = require "ast-renderer"
 
+local tprint = require"tprint"
+
 --local typeget = function(t) return t.tag or t.type end
 local ast2gitolite = renderer("tag")
-
---[===[ -- SHELL QUOTING --
-local function prot(s)
-	return s:gsub("[\"\\$`]", function(cap) return "\\"..cap end)
-end
-local function quotestring(s)
-	return '"'..s:gsub("[\"\\]", function(cap) return "\\"..cap end)..'"'
-end
-local function squotestring(s)
-	return "'"..s:gsub("['\\]", function(cap)
-		if cap == "'" then
-			return [['"'"']] --  ' -> '"'"'
-		else
-			return "\\"..cap
-		end
-	end).."'"
-end
-]===]--
-
 
 local gitolite = ast2gitolite:defs()
 
@@ -61,11 +44,11 @@ function gitolite:Filter(t)
 end
 
 function gitolite:Group(t)
-	return "Group"
-end	
+	return t[1]
+end
 
 function gitolite:GroupDefLine(t)
-	return "gitolite:GroupDefLine"
+	return self:render(t[1]).." = "..self:render(t[2])
 end
 
 function gitolite:Members(t)
@@ -77,11 +60,16 @@ function gitolite:Perm(t)
 end
 
 function gitolite:PermLine(t)
-	return "PermLine"
+	return "PermLine "
+	--return self:render(t[1]).." = "..self:render(t[2])
 end
 
 function gitolite:PermLineWithFilter(t)
-	return "PermLineWithFilter"
+	if #t == 2 then
+		return self:render(t[1]).." = "..self:render(t[2])
+	end
+	--return "PermLineWithFilter "..tprint(t,{inline=false})
+	return #t.." PermLineWithFilter "..self:concat(t, " ")
 end
 
 function gitolite:Repo(t)
