@@ -60,16 +60,25 @@ function gitolite:Perm(t)
 end
 
 function gitolite:PermLine(t)
-	return "PermLine "
-	--return self:render(t[1]).." = "..self:render(t[2])
+	return self:PermLineWithFilter(t)
 end
 
 function gitolite:PermLineWithFilter(t)
 	if #t == 2 then
 		return self:render(t[1]).." = "..self:render(t[2])
+	elseif #t == 3 then
+		-- perm filter = group
+		-- or
+		-- perm = group comment
+		if t[2].tag=="Filter" then
+			return self:render(t[1]).." "..self:render(t[2]).." = "..self:render(t[3])
+		else
+			return self:render(t[1]).." = "..self:render(t[2]).." "..self:render(t[3])
+		end
+	elseif #t == 4 then
+		return self:render(t[1]).." "..self:render(t[2]).." = "..self:render(t[3]).." "..self:render(t[4])
 	end
-	--return "PermLineWithFilter "..tprint(t,{inline=false})
-	return #t.." PermLineWithFilter "..self:concat(t, " ")
+	error("too many content in PermLineWithFilter ?!")
 end
 
 function gitolite:Repo(t)
