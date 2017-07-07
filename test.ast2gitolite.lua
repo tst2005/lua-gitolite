@@ -7,7 +7,7 @@ local x = require "ast2gitolite"
 	local load = loadstring or load
 	local t = load(luacode, luacode, "t", tmpenv)()
 	--print(t)
-	print("t = "..require"tprint"(t, {inline=false}))
+	--print("t = "..require"tprint"(t, {inline=false}))
 	print(x:render(t))
 --	return
 --end
