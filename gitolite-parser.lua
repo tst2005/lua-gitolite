@@ -34,7 +34,7 @@ local grammar = re.compile[[
 	keepemptyline <- {| {:tag: '' -> "EmptyLine" :} |} %nl
 	skipemptyline <- %nl
 
-	keepcomment <- {| maybespaces {'#' [^%nl]* } {:tag: '' -> "Comment" :} |}
+	keepcomment <- {| maybespaces '#' { [^%nl]* } {:tag: '' -> "Comment" :} |}
 	skipcomment <- maybespaces '#' [^%nl]*
 
 	commentline <- comment %nl
