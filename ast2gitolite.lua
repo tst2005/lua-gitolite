@@ -95,7 +95,7 @@ function gitolite:Repo(t)
 	if #t==2 then
 		return "repo".." "..self:render(t[1]).."\n"..self:render(t[2]).."\n"
 	elseif #t == 3 then
-		return "repo".." "..self:render(t[1])..self:render(t[2]).."\n"..self:render(t[3]).."\n"
+		return "repo".." "..self:render(t[1]).." "..self:render(t[2]).."\n"..self:render(t[3]).."\n"
 	end
 end
 
