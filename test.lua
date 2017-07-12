@@ -20,8 +20,6 @@ local atype = function(...) return ast2gitolite:type(...) end
 local data = io.stdin:read("*a")
 local ast = gitolite2ast( data )
 
-
-
 local conv = require "ast-conv"
 conv.atype = atype
 
@@ -35,8 +33,9 @@ applygroups(ast, groups)
 
 --print(tprint(ast, cfg))
 
-
+assert(type(ast2gitolite)=="table")
 local gitolite = ast2gitolite(ast)
+assert(type(gitolite)=="string")
 io.stdout:write( gitolite )
 
 --print(require"mini.tprint.better"(x, {inline=false}))
