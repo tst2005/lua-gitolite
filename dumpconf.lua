@@ -1,3 +1,16 @@
+#!/usr/bin/env lua
+
+if (...)==nil or (...)=="--help" or (...)=="-h" then
+	print("Usage: dumpconf.lua <path/to/gitolite.conf>|'-'")
+	os.exit(1)
+end
+local data
+if (...)=="-" then
+	data=io.stdin:read("*a")
+else
+	data=io.open( (...), "r"):read("*a")
+end
+
 local tprint = require "tprint"
 
 local cfg;cfg = {inline=false, seen=setmetatable({}, {__newindex=function() end, __index=function() return nil end})}
@@ -17,7 +30,7 @@ local gitolite2ast = require "gitolite-parser"
 local ast2gitolite = require "ast2gitolite"
 local atype = function(...) return ast2gitolite:type(...) end
 
-local data = io.stdin:read("*a")
+--local data = io.stdin:read("*a")
 local ast = gitolite2ast( data )
 
 local conv = require "ast-conv"
