@@ -2,6 +2,17 @@ local autocopy = require "mini.copy"
 local tcopy = require "mini.table.shallowcopy"
 -- local way = { ["table"] = function(src) return tcopy(src) end, }
 
+-- TODO: dedup (merge all similar data to common objects) `User{ "foo" }  and another `User{ "foo" } to only one same table
+-- TODO: dup (opposite operation)
+
+-- MAIN TODO:
+-- - get the tag
+-- - apply action by tag
+-- - a default handler if no tag ?
+-- - make the all actions in-place VS in a separated result
+
+-- STUFF(ast, get_tag_function, by_tag_handlers, fallback_handler, in_place=true|false)
+
 local M = {}
 
 local function changetag(src, tag_from, tag_to)
