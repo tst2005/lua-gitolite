@@ -55,5 +55,5 @@ if ... == "-" then
 end
 
 local x = gitolite( data )
-print(require"mini.tprint.better"(x, {inline=false}))
+print("return "..require"mini.tprint.better"(x, {inline=false}))
 

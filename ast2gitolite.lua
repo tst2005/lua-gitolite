@@ -55,8 +55,12 @@ function gitolite:Group(t)
 end
 
 function gitolite:GroupDefLine(t)
-	assert(#t<=2)
-	return self:render(t[1]).." = "..self:render(t[2])
+	-- name = members [comment]
+	assert(#t>=2 and #t<=3)
+	if #t==2 then
+		return self:render(t[1]).." = "..self:render(t[2])
+	end
+	return self:render(t[1]).." = "..self:render(t[2]).." "..self:render(t[3])
 end
 
 function gitolite:Members(t)

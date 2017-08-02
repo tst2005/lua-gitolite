@@ -34,36 +34,36 @@ local grammar = re.compile[[
 	keepemptyline <- {| {:tag: '' -> "EmptyLine" :} |} %nl
 	skipemptyline <- %nl
 
-	keepcomment <- {| maybespaces '#' { [^%nl]* } {:tag: '' -> "Comment" :} |}
-	skipcomment <- maybespaces '#' [^%nl]*
+	keepcomment <- {| '#' { [^%nl]* } {:tag: '' -> "Comment" :} |}
+	skipcomment <- '#' [^%nl]*
 
-	commentline <- comment %nl
+	commentline <- maybespaces comment %nl
 	maybespaces <- ws*
 	spaces <- ws+
 	ws <- %taborspace
 
-	descline <- {| {:tag: '' -> "DescLine" :} descname maybespaces '=' maybespaces desccontent comment? |} %nl
+	descline <- {| {:tag: '' -> "DescLine" :} descname maybespaces '=' maybespaces desccontent maybespaces comment? |} %nl
 	descname <- {| {[a-zA-Z0-9_-]+} {:tag: '' -> "DescName" :} |}
 	desccontent <- {| '"' {[^"]*} '"' {:tag: '' -> "DescContent" :} |}
 
-	groupline <- {| {:tag: '' -> "GroupDefLine" :} groupname maybespaces '=' maybespaces members comment? |} %nl
+	groupline <- {| {:tag: '' -> "GroupDefLine" :} groupname maybespaces '=' maybespaces members maybespaces comment? |} %nl
 	groupname <- {| { "@" [a-zA-Z0-9_-]+ } {:tag: '' -> "Group" :} |}
 	username  <- {| {[a-zA-Z0-9_-]+} {:tag: '' -> "User" :} |}
 	--members <- {[a-zA-Z0-9, _-]+}
-	members <- {| member (spaces member)* {:tag: '' -> "Members" :} |}
+	members <- {| {:tag: '' -> "Members" :} member (spaces member)* |}
 	member <- groupname / username
 
-	repoline <- {| maybespaces 'repo' spaces reponame comment? %nl repobody {:tag: '' -> "Repo" :} |}
+	repoline <- {| maybespaces 'repo' spaces reponame maybespaces comment? %nl repobody {:tag: '' -> "Repo" :} |}
 	reponame <- {| { [a-zA-Z0-9_-]+ } {:tag: '' -> "RepoName" :} |}
 	repobody <- {| (permline)+ {:tag: '' -> "RepoBody" :} |}
-	--permline <- permline0 / permline1 / permline2 / permline3 / permline4 / permline5
-	permline <- permline0 / permline1 / permline2 / permline5
+	--permline <- permline0 / permline1 / permline2 / permline3 / permline4 / permline5 / groupline
+	permline <- permline0 / permline1 / permline2 / permline5 / groupline
 	permline0 <- {| maybespaces "config" maybespaces {[^%nl]*} {:tag: '' -> "ConfigLine" :} |} %nl
-	permline1 <- {| maybespaces perm maybespaces filter? maybespaces '=' maybespaces members comment* {:tag: '' -> "PermLineWithFilter" :} |} %nl
+	permline1 <- {| maybespaces perm maybespaces filter? maybespaces '=' maybespaces members maybespaces comment* {:tag: '' -> "PermLineWithFilter" :} |} %nl
 	permline2 <- {| maybespaces perm maybespaces filter? maybespaces '=' maybespaces members {:tag: '' -> "PermLineWithFilter" :} |} %nl
-	--permline3 <- {| maybespaces perm maybespaces '=' maybespaces members comment* {:tag: '' -> "PermLine" :} |} %nl
+	--permline3 <- {| maybespaces perm maybespaces '=' maybespaces members maybespaces comment* {:tag: '' -> "PermLine" :} |} %nl
 	--permline4 <- {| maybespaces perm maybespaces '=' maybespaces members {:tag: '' -> "PermLine" :} |} %nl
-	permline5 <- comment? %nl
+	permline5 <- maybespaces comment? %nl
 	--filter <- {| {[a-zA-Z/_-]+} |}
 	filter <- {| {[^%s=]+} {:tag: '' -> "Filter" :} |}
 	
