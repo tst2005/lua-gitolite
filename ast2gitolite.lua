@@ -19,7 +19,7 @@ end
 
 function gitolite:DescLine(t)
 	assert(#t<=2)
-	return self:render(t[1]).." = "..self:render(t[2])
+	return self:render(t, 1).." = "..self:render(t, 2)
 end
 
 function gitolite:DescContent(t)
@@ -58,9 +58,9 @@ function gitolite:GroupDefLine(t)
 	-- name = members [comment]
 	assert(#t>=2 and #t<=3)
 	if #t==2 then
-		return self:render(t[1]).." = "..self:render(t[2])
+		return self:render(t, 1).." = "..self:render(t, 2)
 	end
-	return self:render(t[1]).." = "..self:render(t[2]).." "..self:render(t[3])
+	return self:render(t, 1).." = "..self:render(t, 2).." "..self:render(t, 3)
 end
 
 function gitolite:Members(t)
@@ -78,18 +78,18 @@ end
 
 function gitolite:PermLineWithFilter(t)
 	if #t == 2 then
-		return self:render(t[1]).." = "..self:render(t[2]) -- perm = members
+		return self:render(t, 1).." = "..self:render(t, 2) -- perm = members
 	elseif #t == 3 then
 		-- perm filter = group
 		-- or
 		-- perm = group comment
 		if t[2].tag=="Filter" then
-			return self:render(t[1]).." "..self:render(t[2]).." = "..self:render(t[3]) -- perm filter = members
+			return self:render(t, 1).." "..self:render(t, 2).." = "..self:render(t, 3) -- perm filter = members
 		else
-			return self:render(t[1]).." = "..self:render(t[2]).." "..self:render(t[3]) -- perm = members comment
+			return self:render(t, 1).." = "..self:render(t, 2).." "..self:render(t, 3) -- perm = members comment
 		end
 	elseif #t == 4 then
-		return self:render(t[1]).." "..self:render(t[2]).." = "..self:render(t[3]).." "..self:render(t[4]) -- perms filter = members comment
+		return self:render(t, 1).." "..self:render(t, 2).." = "..self:render(t, 3).." "..self:render(t, 4) -- perms filter = members comment
 	end
 	error("too many content in PermLineWithFilter ?!")
 end
@@ -97,9 +97,9 @@ end
 function gitolite:Repo(t)
 	assert(#t<=3)
 	if #t==2 then
-		return "repo".." "..self:render(t[1]).."\n"..self:render(t[2]).."\n"
+		return "repo".." "..self:render(t, 1).."\n"..self:render(t, 2).."\n"
 	elseif #t == 3 then
-		return "repo".." "..self:render(t[1]).." "..self:render(t[2]).."\n"..self:render(t[3]).."\n"
+		return "repo".." "..self:render(t, 1).." "..self:render(t, 2).."\n"..self:render(t, 3).."\n"
 	end
 end
 
